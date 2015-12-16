@@ -12,14 +12,22 @@
         "boot_command": [
             "<right><right><return><wait>",
             "root<return>",
-            "dhclient vtnet0;",
-            "mkdir /tmp/etc /tmp/root;",
-            "mount_unionfs /tmp/etc /etc;",
-            "mount_unionfs /tmp/root /root;",
-            "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config;",
-            "passwd root;",
-            "service sshd onestart<return><wait><wait><wait>",
-            "password<return>password<return><wait>"
+            "cd /tmp && exec sh -x<return>",
+            "echo export ZFSBOOT_DISKS=ada0 >> install;",
+            "echo export nonInteractive=YES >> install;",
+            "echo export DISTRIBUTIONS=\"'kernel.txz base.txz'\" >> install;",
+            "echo >> install;",
+            "echo '#!/bin/sh -ex' >> install;",
+            "echo 'echo ifconfig_vtnet0=DHCP >> /etc/rc.conf' >> install;",
+            "echo 'echo sshd_enable=YES >> /etc/rc.conf' >> install;",
+            "echo 'echo sshd_enable=YES >> /etc/rc.conf' >> install;",
+            "echo 'echo PermitRootLogin yes >> /etc/ssh/sshd_config' >> install;",
+            "cat install<return>",
+            "bsdinstall script install<return><wait10><wait5><wait>",
+            "bsdinstall rootpass<return><wait10>",
+            "password<return><wait>",
+            "password<return><wait>",
+            "reboot<return>"
         ],
         "vboxmanage": [
             ["modifyvm", "{{.Name}}", "--memory", "4096"],
@@ -29,7 +37,7 @@
     }],
     "provisioners": [{
         "type": "shell",
-        "script": "install",
-        "execute_command": "env {{ .Vars }} bsdinstall script {{ .Path }}"
+        "script": "install-puppet",
+        "execute_command": "chmod +x {{ .Path }}; env {{ .Vars }} {{ .Path }}"
     }]
 }
