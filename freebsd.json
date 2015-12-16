@@ -39,5 +39,13 @@
         "type": "shell",
         "script": "install-puppet",
         "execute_command": "chmod +x {{ .Path }}; env {{ .Vars }} {{ .Path }}"
+    }, {
+        "type": "puppet-masterless",
+        "manifest_file": "site.pp",
+        "execute_command": "cd {{.WorkingDir}} && env {{.FacterVars}} puppet apply --verbose --modulepath='{{.ModulePath}}' {{if ne .HieraConfigPath \"\"}}--hiera_config='{{.HieraConfigPath}}' {{end}} {{if ne .ManifestDir \"\"}}--manifestdir='{{.ManifestDir}}' {{end}} --detailed-exitcodes {{.ManifestFile}}"
+    }],
+    "post-processors": [{
+        "type": "vagrant",
+        "compression_level": 9
     }]
 }
