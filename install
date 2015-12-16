@@ -1,0 +1,9 @@
+export ZFSBOOT_DISKS=ada0
+export nonInteractive=YES
+export DISTRIBUTIONS="kernel.txz base.txz"
+
+#!/bin/sh -ex
+ASSUME_ALWAYS_YES=YES /usr/sbin/pkg
+echo "ifconfig_vtnet0=DHCP" >> /etc/rc.conf
+echo "sshd_enable=YES" >> /etc/rc.conf
+pkg install puppet

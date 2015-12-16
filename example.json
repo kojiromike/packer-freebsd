@@ -1,0 +1,35 @@
+{
+    "builders": [{
+        "type": "virtualbox-iso",
+        "guest_os_type": "FreeBSD_64",
+        "iso_url": "http://ftp.freebsd.org/pub/FreeBSD/releases/amd64/amd64/ISO-IMAGES/10.2/FreeBSD-10.2-RELEASE-amd64-dvd1.iso",
+        "iso_checksum": "95d4eb6ed5c565af8bc2b950e19484cb00c967922674efaf6b5391649a7dc1a1",
+        "iso_checksum_type": "sha256",
+        "ssh_username": "root",
+        "ssh_password": "password",
+        "guest_additions_mode": "attach",
+        "boot_wait": "22s",
+        "boot_command": [
+            "<right><right><return><wait>",
+            "root<return>",
+            "dhclient vtnet0;",
+            "mkdir /tmp/etc /tmp/root;",
+            "mount_unionfs /tmp/etc /etc;",
+            "mount_unionfs /tmp/root /root;",
+            "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config;",
+            "passwd root;",
+            "service sshd onestart<return><wait><wait><wait>",
+            "password<return>password<return><wait>"
+        ],
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "4096"],
+            ["modifyvm", "{{.Name}}", "--nictype1", "virtio"]
+        ],
+        "shutdown_command": "shutdown -h now"
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "script": "install",
+        "execute_command": "env {{ .Vars }} bsdinstall script {{ .Path }}"
+    }]
+}
