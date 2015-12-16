@@ -33,7 +33,7 @@
             ["modifyvm", "{{.Name}}", "--memory", "4096"],
             ["modifyvm", "{{.Name}}", "--nictype1", "virtio"]
         ],
-        "shutdown_command": "shutdown -h now"
+        "shutdown_command": "shutdown -p now"
     }],
     "provisioners": [{
         "type": "shell",
