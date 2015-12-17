@@ -37,16 +37,16 @@
     }],
     "provisioners": [{
         "type": "shell",
-        "script": "install-virtualbox-guest-additions",
+        "script": "provisioners/install-virtualbox-guest-additions",
         "only": ["virtualbox-iso"],
         "execute_command": "chmod +x {{ .Path }}; exec env {{ .Vars }} {{ .Path }}"
     }, {
         "type": "shell",
-        "script": "install-puppet",
+        "script": "provisioners/install-puppet",
         "execute_command": "chmod +x {{ .Path }}; exec env {{ .Vars }} {{ .Path }}"
     }, {
         "type": "puppet-masterless",
-        "manifest_file": "site.pp",
+        "manifest_file": "provisioners/site.pp",
         "execute_command": "cd {{.WorkingDir}} && exec env {{.FacterVars}} puppet apply --verbose --modulepath='{{.ModulePath}}' {{if ne .HieraConfigPath \"\"}}--hiera_config='{{.HieraConfigPath}}' {{end}} {{if ne .ManifestDir \"\"}}--manifestdir='{{.ManifestDir}}' {{end}} {{.ManifestFile}}"
     }],
     "post-processors": [{
