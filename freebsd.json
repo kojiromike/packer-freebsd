@@ -6,7 +6,7 @@
         "iso_checksum": "95d4eb6ed5c565af8bc2b950e19484cb00c967922674efaf6b5391649a7dc1a1",
         "iso_checksum_type": "sha256",
         "ssh_username": "root",
-        "ssh_password": "password",
+        "ssh_password": "{{user `root_password`}}",
         "guest_additions_mode": "attach",
         "boot_wait": "22s",
         "boot_command": [
@@ -25,8 +25,8 @@
             "cat install<return>",
             "bsdinstall script install<return><wait10><wait5><wait>",
             "bsdinstall rootpass<return><wait10>",
-            "password<return><wait>",
-            "password<return><wait>",
+            "{{user `root_password`}}<return><wait>",
+            "{{user `root_password`}}<return><wait>",
             "reboot<return>"
         ],
         "vboxmanage": [
@@ -39,6 +39,10 @@
         "type": "shell",
         "script": "provisioners/install-virtualbox-guest-additions",
         "only": ["virtualbox-iso"],
+        "execute_command": "chmod +x {{ .Path }}; exec env {{ .Vars }} {{ .Path }}"
+    }, {
+        "type": "shell",
+        "script": "provisioners/install-vagrant-dependencies",
         "execute_command": "chmod +x {{ .Path }}; exec env {{ .Vars }} {{ .Path }}"
     }, {
         "type": "shell",
@@ -55,7 +59,10 @@
         "output": "{{.BuildName}}.tar.lz4"
     }, {
         "type": "vagrant",
-        "vagrantfile_template": "Vagrantfile.template",
+        "vagrantfile_template": "vagrantfile-freebsd-10.2.template",
         "compression_level": 9
-    }]
+    }],
+    "variables": {
+        "root_password": "vagrant"
+    }
 }
