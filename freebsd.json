@@ -37,20 +37,16 @@
     }],
     "provisioners": [{
         "type": "shell",
-        "script": "provisioners/install-virtualbox-guest-additions",
-        "only": ["virtualbox-iso"],
-        "execute_command": "chmod +x {{ .Path }}; exec env {{ .Vars }} {{ .Path }}"
-    }, {
-        "type": "shell",
-        "script": "provisioners/install-vagrant-dependencies",
-        "execute_command": "chmod +x {{ .Path }}; exec env {{ .Vars }} {{ .Path }}"
-    }, {
-        "type": "shell",
         "script": "provisioners/install-puppet",
         "execute_command": "chmod +x {{ .Path }}; exec env {{ .Vars }} {{ .Path }}"
     }, {
         "type": "puppet-masterless",
         "manifest_file": "provisioners/site.pp",
+        "execute_command": "cd {{.WorkingDir}} && exec env {{.FacterVars}} puppet apply --verbose --modulepath='{{.ModulePath}}' {{if ne .HieraConfigPath \"\"}}--hiera_config='{{.HieraConfigPath}}' {{end}} {{if ne .ManifestDir \"\"}}--manifestdir='{{.ManifestDir}}' {{end}} {{.ManifestFile}}"
+    }, {
+        "type": "puppet-masterless",
+        "manifest_file": "provisioners/virtualbox.pp",
+        "only": ["virtualbox-iso"],
         "execute_command": "cd {{.WorkingDir}} && exec env {{.FacterVars}} puppet apply --verbose --modulepath='{{.ModulePath}}' {{if ne .HieraConfigPath \"\"}}--hiera_config='{{.HieraConfigPath}}' {{end}} {{if ne .ManifestDir \"\"}}--manifestdir='{{.ManifestDir}}' {{end}} {{.ManifestFile}}"
     }],
     "post-processors": [{

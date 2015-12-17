@@ -1,3 +1,4 @@
 #!/bin/sh -xe
 
-ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install puppet
+ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install ruby21-gems
+/usr/local/bin/gem install puppet

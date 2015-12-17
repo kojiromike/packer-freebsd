@@ -1,7 +1,0 @@
-#!/bin/sh -xe
-
-ASSUME_ALWAYS_YES=YES /usr/sbin/pkg install virtualbox-ose-additions
-echo vboxguest_enable=YES >> /etc/rc.conf
-echo vboxservice_enable=YES >> /etc/rc.conf
-service vboxguest onestart
-service vboxservice onestart

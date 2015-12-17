@@ -1,6 +1,16 @@
 node default {
+    Package {
+        ensure   => 'installed',
+        provider => 'pkgng',
+    }
+    $packages = ['sudo', 'rsync']
+    package { $packages: } ->
+    file { '/usr/local/etc/sudoers.d/vagrant':
+        ensure  => present,
+        content => 'vagrant ALL=(ALL) NOPASSWD: ALL'
+    }
     group { 'wheel':
-      ensure => present,
+        ensure => present,
     }
     user { 'vagrant':
         ensure     => present,
@@ -11,10 +21,10 @@ node default {
         require    => Group['wheel'],
     } ->
     file { '/home/vagrant/.ssh':
-      ensure => directory,
-      owner  => 'vagrant',
-      group  => 'vagrant',
-      mode   => '0700',
+        ensure => directory,
+        owner  => 'vagrant',
+        group  => 'vagrant',
+        mode   => '0700',
     } ->
     ssh_authorized_key { 'Vagrant Insecure Public Key':
         user   => 'vagrant',
