@@ -1,16 +1,15 @@
 VAGRANT_BOX_NAME:='kojiromike/freebsd-10.2'
-BOX_FILE=$(wildcard *.box *.lz4)
-# 'packer_virtualbox-iso_virtualbox.box'
+BOX_FILE='packer_virtualbox-iso_virtualbox.box'
 
-.PHONY: clean vagrant-add
+.PHONY: all clean install test
 
-all: $(BOX_FILE) vagrant-add
+all: $(BOX_FILE)
 
-$(BOX_FILE): freebsd.json provisioners/*
+$(BOX_FILE):
 	packer build -force freebsd.json
 
-vagrant-add: vagrantfile-freebsd-10.2.template packer_virtualbox-iso_virtualbox.box
-	vagrant box add -f --name $(VAGRANT_BOX_NAME) packer_virtualbox-iso_virtualbox.box
+install: $(BOX_FILE)
+	vagrant box add -f --name $(VAGRANT_BOX_NAME) $(BOX_FILE)
 
 clean:
 	vagrant destroy -f; \
